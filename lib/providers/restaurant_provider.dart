@@ -392,6 +392,20 @@ class RestaurantProvider extends ChangeNotifier {
     await loadInitialData();
   }
 
+  // === Category Management ===
+  Future<CategoryModel> getOrCreateCategory(String categoryName) async {
+    final cat = await repository.getOrCreateCategory(categoryName);
+    await loadInitialData();
+    return cat;
+  }
+
+  Future<CategoryModel> addCategory(String categoryName) async {
+    final cat = await repository.getOrCreateCategory(categoryName);
+    showNotification('Kategori "${cat.name}" siap digunakan!');
+    await loadInitialData();
+    return cat;
+  }
+
   // === Table Management ===
   Future<void> addTable({
     required String number,

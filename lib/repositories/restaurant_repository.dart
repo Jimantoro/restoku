@@ -33,6 +33,22 @@ class RestaurantRepository {
   // === Category Management ===
   Future<int> insertCategory(CategoryModel category) => database.insertCategory(category);
   Future<int> deleteCategory(int id) => database.deleteCategory(id);
+  Future<CategoryModel> getOrCreateCategory(String categoryName) async {
+    final trimmedName = categoryName.trim();
+    final allCategories = await database.getAllCategories();
+    for (var cat in allCategories) {
+      if (cat.name.toLowerCase() == trimmedName.toLowerCase()) {
+        return cat;
+      }
+    }
+    final newCat = CategoryModel(
+      name: trimmedName,
+      iconName: 'Restaurant',
+      displayOrder: allCategories.length + 1,
+    );
+    final id = await database.insertCategory(newCat);
+    return newCat.copyWith(id: id);
+  }
 
   // === Table Management ===
   Future<int> insertTable(TableModel table) => database.insertTable(table);

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/category_model.dart';
 import '../models/menu_model.dart';
 import '../providers/restaurant_provider.dart';
 import '../repositories/restaurant_repository.dart';
@@ -90,112 +89,260 @@ class _MenuManagementScreenState extends State<MenuManagementScreen> {
 
   void _showMenuFormDialog(BuildContext context, RestaurantProvider provider, MenuModel? menu) {
     final nameCtrl = TextEditingController(text: menu?.name ?? '');
+    final initialCatName = menu?.categoryName ?? (provider.categories.isNotEmpty ? provider.categories.first.name : 'Makanan Utama');
+    final categoryCtrl = TextEditingController(text: initialCatName);
     final priceCtrl = TextEditingController(text: menu != null ? menu.price.toInt().toString() : '');
     final costPriceCtrl = TextEditingController(text: menu != null ? menu.costPrice.toInt().toString() : '');
     final stockCtrl = TextEditingController(text: menu != null ? menu.stock.toString() : '50');
     final descCtrl = TextEditingController(text: menu?.description ?? '');
 
-    CategoryModel? selectedCategory = menu != null
-        ? provider.categories.cast<CategoryModel?>().firstWhere((c) => c?.id == menu.categoryId, orElse: () => null)
-        : (provider.categories.isNotEmpty ? provider.categories.first : null);
-
     showDialog(
       context: context,
       builder: (ctx) => StatefulBuilder(
-        builder: (context, setModalState) => AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: Text(menu != null ? 'Edit Menu Makanan' : 'Tambah Menu Baru', style: const TextStyle(fontWeight: FontWeight.bold)),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: nameCtrl,
-                  decoration: const InputDecoration(labelText: 'Nama Hidangan'),
-                ),
-                const SizedBox(height: 10),
+        builder: (context, setModalState) => Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+          backgroundColor: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        menu != null ? 'Edit Menu Makanan' : 'Tambah Menu Baru',
+                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimaryLight),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close, size: 20),
+                        onPressed: () => Navigator.pop(ctx),
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
 
-                // Category Dropdown
-                DropdownButtonFormField<CategoryModel>(
-                  initialValue: selectedCategory,
-                  decoration: const InputDecoration(labelText: 'Kategori'),
-                  items: provider.categories.map((cat) {
-                    return DropdownMenuItem(value: cat, child: Text(cat.name));
-                  }).toList(),
-                  onChanged: (cat) => setModalState(() => selectedCategory = cat),
-                ),
-                const SizedBox(height: 10),
-
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: priceCtrl,
-                        keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(labelText: 'Harga Jual (Rp)'),
+                  // 1. Nama Hidangan
+                  TextField(
+                    controller: nameCtrl,
+                    decoration: InputDecoration(
+                      labelText: 'Nama Hidangan',
+                      hintText: 'Contoh: Nasi Goreng Spesial',
+                      prefixIcon: const Icon(Icons.restaurant, size: 20),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14),
+                        borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: TextField(
-                        controller: stockCtrl,
-                        keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(labelText: 'Stok Awal'),
+                  ),
+                  const SizedBox(height: 14),
+
+                  // 2. Kategori (Bisa Ketik Langsung atau Pilih dari Dropdown/Chips)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextField(
+                        controller: categoryCtrl,
+                        onChanged: (_) => setModalState(() {}),
+                        decoration: InputDecoration(
+                          labelText: 'Kategori (Ketik atau Pilih)',
+                          hintText: 'Ketik nama kategori baru...',
+                          prefixIcon: const Icon(Icons.category_outlined, size: 20),
+                          suffixIcon: PopupMenuButton<String>(
+                            icon: const Icon(Icons.arrow_drop_down_circle_outlined, color: AppColors.primary),
+                            tooltip: 'Pilih dari daftar kategori yang ada',
+                            onSelected: (String catName) {
+                              setModalState(() {
+                                categoryCtrl.text = catName;
+                              });
+                            },
+                            itemBuilder: (ctx) => provider.categories.map((cat) {
+                              return PopupMenuItem<String>(
+                                value: cat.name,
+                                child: Row(
+                                  children: [
+                                    const Icon(Icons.label_outline, size: 16, color: AppColors.primary),
+                                    const SizedBox(width: 8),
+                                    Text(cat.name),
+                                  ],
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      // Saran Kategori Cepat (Chips)
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: provider.categories.map((cat) {
+                            final isSelected = categoryCtrl.text.trim().toLowerCase() == cat.name.toLowerCase();
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 6),
+                              child: ActionChip(
+                                label: Text(
+                                  cat.name,
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                                    color: isSelected ? Colors.white : AppColors.textPrimaryLight,
+                                  ),
+                                ),
+                                backgroundColor: isSelected ? AppColors.primary : AppColors.surfaceLightChip,
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                side: BorderSide.none,
+                                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 0),
+                                onPressed: () {
+                                  setModalState(() {
+                                    categoryCtrl.text = cat.name;
+                                  });
+                                },
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 14),
+
+                  // 3. Harga Jual & Stok Awal
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: priceCtrl,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            labelText: 'Harga Jual (Rp)',
+                            hintText: '25000',
+                            prefixIcon: const Icon(Icons.payments_outlined, size: 20),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(14),
+                              borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: TextField(
+                          controller: stockCtrl,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            labelText: 'Stok Awal',
+                            hintText: '50',
+                            prefixIcon: const Icon(Icons.inventory_2_outlined, size: 20),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(14),
+                              borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 14),
+
+                  // 4. Deskripsi Menu
+                  TextField(
+                    controller: descCtrl,
+                    maxLines: 2,
+                    decoration: InputDecoration(
+                      labelText: 'Deskripsi Menu (Opsional)',
+                      hintText: 'Rasa gurih, pedas, disajikan dengan telur...',
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14),
+                        borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
                       ),
                     ),
-                  ],
-                ),
-                const SizedBox(height: 10),
+                  ),
+                  const SizedBox(height: 18),
 
-                TextField(
-                  controller: descCtrl,
-                  maxLines: 2,
-                  decoration: const InputDecoration(labelText: 'Deskripsi Menu (Opsional)'),
-                ),
-              ],
+                  // Actions
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      OutlinedButton(
+                        onPressed: () => Navigator.pop(ctx),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        ),
+                        child: const Text('Batal'),
+                      ),
+                      const SizedBox(width: 10),
+                      ElevatedButton(
+                        onPressed: () async {
+                          final name = nameCtrl.text.trim();
+                          final catName = categoryCtrl.text.trim();
+                          final price = double.tryParse(priceCtrl.text) ?? 0.0;
+                          final costPrice = double.tryParse(costPriceCtrl.text) ?? 0.0;
+                          final stock = int.tryParse(stockCtrl.text) ?? 0;
+                          final desc = descCtrl.text.trim();
+
+                          if (name.isNotEmpty && catName.isNotEmpty && priceCtrl.text.isNotEmpty) {
+                            // Otomatis buat atau ambil kategori berdasarkan input teks
+                            final category = await provider.getOrCreateCategory(catName);
+
+                            if (menu != null) {
+                              await provider.updateMenu(
+                                menu.copyWith(
+                                  name: name,
+                                  categoryId: category.id,
+                                  categoryName: category.name,
+                                  price: price,
+                                  costPrice: costPrice,
+                                  description: desc,
+                                  stock: stock,
+                                ),
+                              );
+                            } else {
+                              await provider.addNewMenu(
+                                name: name,
+                                categoryId: category.id!,
+                                categoryName: category.name,
+                                price: price,
+                                costPrice: costPrice,
+                                description: desc,
+                                stock: stock,
+                              );
+                            }
+                            if (context.mounted) {
+                              Navigator.pop(ctx);
+                            }
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          elevation: 0,
+                        ),
+                        child: const Text('Simpan', style: TextStyle(fontWeight: FontWeight.bold)),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
-          actions: [
-            OutlinedButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: const Text('Batal'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                if (nameCtrl.text.trim().isNotEmpty && selectedCategory != null && priceCtrl.text.isNotEmpty) {
-                  if (menu != null) {
-                    provider.updateMenu(
-                      menu.copyWith(
-                        name: nameCtrl.text.trim(),
-                        categoryId: selectedCategory!.id,
-                        categoryName: selectedCategory!.name,
-                        price: double.tryParse(priceCtrl.text) ?? 0.0,
-                        costPrice: double.tryParse(costPriceCtrl.text) ?? 0.0,
-                        description: descCtrl.text.trim(),
-                        stock: int.tryParse(stockCtrl.text) ?? 0,
-                      ),
-                    );
-                  } else {
-                    provider.addNewMenu(
-                      name: nameCtrl.text.trim(),
-                      categoryId: selectedCategory!.id!,
-                      categoryName: selectedCategory!.name,
-                      price: double.tryParse(priceCtrl.text) ?? 0.0,
-                      costPrice: double.tryParse(costPriceCtrl.text) ?? 0.0,
-                      description: descCtrl.text.trim(),
-                      stock: int.tryParse(stockCtrl.text) ?? 0,
-                    );
-                  }
-                  Navigator.pop(ctx);
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: Colors.white,
-              ),
-              child: const Text('Simpan'),
-            ),
-          ],
         ),
       ),
     );
