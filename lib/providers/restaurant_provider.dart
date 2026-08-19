@@ -437,7 +437,6 @@ class RestaurantProvider extends ChangeNotifier {
 
   void clearNotification() {
     _notificationMessage = null;
-    notifyListeners();
   }
 }
 

@@ -52,7 +52,9 @@ class _MainAppScaffoldState extends State<MainAppScaffold> {
     // Listen for notification snackbars
     if (provider.notificationMessage != null) {
       final msg = provider.notificationMessage!;
+      provider.clearNotification();
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(msg),
@@ -61,22 +63,23 @@ class _MainAppScaffoldState extends State<MainAppScaffold> {
             duration: const Duration(seconds: 2),
           ),
         );
-        provider.clearNotification();
       });
     }
 
     // Modal Payment Dialog
     if (provider.showPaymentDialog) {
+      final activeSettle = provider.activeSettleOrder;
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        provider.closePaymentDialog();
         showModalBottomSheet(
           context: context,
           isScrollControlled: true,
           backgroundColor: Colors.transparent,
           builder: (ctx) => PaymentModal(
             provider: provider,
-            activeSettleOrder: provider.activeSettleOrder,
+            activeSettleOrder: activeSettle,
             onDismiss: () {
-              provider.closePaymentDialog();
               Navigator.pop(ctx);
             },
           ),
@@ -88,12 +91,13 @@ class _MainAppScaffoldState extends State<MainAppScaffold> {
     if (provider.showReceiptDialog && provider.lastCompletedOrder != null) {
       final order = provider.lastCompletedOrder!;
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        provider.closeReceiptDialog();
         showDialog(
           context: context,
           builder: (ctx) => ReceiptModal(
             orderWithItems: order,
             onDismiss: () {
-              provider.closeReceiptDialog();
               Navigator.pop(ctx);
             },
           ),
