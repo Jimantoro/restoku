@@ -291,12 +291,46 @@ class _MenuManagementScreenState extends State<MenuManagementScreen> {
                         onPressed: () async {
                           final name = nameCtrl.text.trim();
                           final catName = categoryCtrl.text.trim();
-                          final price = double.tryParse(priceCtrl.text) ?? 0.0;
-                          final costPrice = double.tryParse(costPriceCtrl.text) ?? 0.0;
-                          final stock = int.tryParse(stockCtrl.text) ?? 0;
+                          final cleanPriceStr = priceCtrl.text.replaceAll(RegExp(r'[^0-9]'), '');
+                          final cleanCostPriceStr = costPriceCtrl.text.replaceAll(RegExp(r'[^0-9]'), '');
+                          final cleanStockStr = stockCtrl.text.replaceAll(RegExp(r'[^0-9]'), '');
+
+                          final price = double.tryParse(cleanPriceStr) ?? 0.0;
+                          final costPrice = double.tryParse(cleanCostPriceStr) ?? 0.0;
+                          final stock = int.tryParse(cleanStockStr) ?? 50;
                           final desc = descCtrl.text.trim();
 
-                          if (name.isNotEmpty && catName.isNotEmpty && priceCtrl.text.isNotEmpty) {
+                          if (name.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Nama hidangan tidak boleh kosong!'),
+                                behavior: SnackBarBehavior.floating,
+                              ),
+                            );
+                            return;
+                          }
+
+                          if (catName.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Kategori tidak boleh kosong!'),
+                                behavior: SnackBarBehavior.floating,
+                              ),
+                            );
+                            return;
+                          }
+
+                          if (price <= 0) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Harga jual harus lebih besar dari 0!'),
+                                behavior: SnackBarBehavior.floating,
+                              ),
+                            );
+                            return;
+                          }
+
+                          try {
                             // Otomatis buat atau ambil kategori berdasarkan input teks
                             final category = await provider.getOrCreateCategory(catName);
 
@@ -325,6 +359,16 @@ class _MenuManagementScreenState extends State<MenuManagementScreen> {
                             }
                             if (context.mounted) {
                               Navigator.pop(ctx);
+                            }
+                          } catch (e) {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Gagal menyimpan menu: $e'),
+                                  backgroundColor: AppColors.error,
+                                  behavior: SnackBarBehavior.floating,
+                                ),
+                              );
                             }
                           }
                         },

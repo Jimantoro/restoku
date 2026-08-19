@@ -173,14 +173,41 @@ class TablesScreen extends StatelessWidget {
             child: const Text('Batal'),
           ),
           ElevatedButton(
-            onPressed: () {
-              if (numberCtrl.text.trim().isNotEmpty) {
-                provider.addTable(
-                  number: numberCtrl.text.trim(),
-                  section: sectionCtrl.text.trim(),
-                  capacity: int.tryParse(capCtrl.text) ?? 4,
+            onPressed: () async {
+              final number = numberCtrl.text.trim();
+              final section = sectionCtrl.text.trim();
+              final cleanCap = capCtrl.text.replaceAll(RegExp(r'[^0-9]'), '');
+              final cap = int.tryParse(cleanCap) ?? 4;
+
+              if (number.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Nomor meja tidak boleh kosong!'),
+                    behavior: SnackBarBehavior.floating,
+                  ),
                 );
-                Navigator.pop(ctx);
+                return;
+              }
+
+              try {
+                await provider.addTable(
+                  number: number,
+                  section: section.isNotEmpty ? section : 'Utama',
+                  capacity: cap,
+                );
+                if (context.mounted) {
+                  Navigator.pop(ctx);
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Gagal menambahkan meja: $e'),
+                      backgroundColor: AppColors.error,
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                }
               }
             },
             style: ElevatedButton.styleFrom(
