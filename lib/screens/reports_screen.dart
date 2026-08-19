@@ -262,7 +262,7 @@ class ReportsScreen extends StatelessWidget {
                                 color: rankColor,
                                 shape: BoxShape.circle,
                               ),
-                              alignment: Alignment.Center,
+                              alignment: Alignment.center,
                               child: Text(
                                 '${index + 1}',
                                 style: TextStyle(

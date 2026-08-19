@@ -55,7 +55,7 @@ class RestaurantProvider extends ChangeNotifier {
   OrderType _orderType = OrderType.dineIn;
   OrderType get orderType => _orderType;
 
-  List<CartItemModel> _cartItems = [];
+  final List<CartItemModel> _cartItems = [];
   List<CartItemModel> get cartItems => _cartItems;
 
   double _discountPercent = 0.0;
@@ -64,10 +64,10 @@ class RestaurantProvider extends ChangeNotifier {
   double _taxPercent = 10.0; // 10% PB1 Restaurant Tax
   double get taxPercent => _taxPercent;
 
-  double _servicePercent = 0.0;
+  final double _servicePercent = 0.0;
   double get servicePercent => _servicePercent;
 
-  String _cashierName = 'Kasir Resto';
+  final String _cashierName = 'Kasir Resto';
   String get cashierName => _cashierName;
 
   CartItemModel? _activeNotesItem;

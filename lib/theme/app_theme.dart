@@ -23,10 +23,10 @@ class AppTheme {
         onError: Colors.white,
       ),
       scaffoldBackgroundColor: AppColors.surfaceLight,
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: AppColors.surfaceLightCard,
         elevation: 1.5,
-        shape: RoundedCornerShape(16),
+        shape: roundedCornerShape(16),
         surfaceTintColor: Colors.transparent,
       ),
       appBarTheme: const AppBarTheme(
@@ -70,19 +70,19 @@ class AppTheme {
         backgroundColor: AppColors.surfaceLightChip,
         selectedColor: AppColors.primary,
         labelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-        shape: RoundedCornerShape(24),
+        shape: roundedCornerShape(24),
         side: BorderSide.none,
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
-        shape: RoundedCornerShape(16),
+        shape: roundedCornerShape(16),
         elevation: 3,
       ),
     );
   }
 
-  static RoundedRectangleBorder RoundedCornerShape(double radius) {
+  static RoundedRectangleBorder roundedCornerShape(double radius) {
     return RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius));
   }
 }

@@ -117,7 +117,7 @@ class _MenuManagementScreenState extends State<MenuManagementScreen> {
 
                 // Category Dropdown
                 DropdownButtonFormField<CategoryModel>(
-                  value: selectedCategory,
+                  initialValue: selectedCategory,
                   decoration: const InputDecoration(labelText: 'Kategori'),
                   items: provider.categories.map((cat) {
                     return DropdownMenuItem(value: cat, child: Text(cat.name));

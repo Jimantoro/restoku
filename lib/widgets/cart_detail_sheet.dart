@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/cart_item_model.dart';
 import '../models/order_model.dart';
-import '../models/table_model.dart';
 import '../providers/restaurant_provider.dart';
 import '../repositories/restaurant_repository.dart';
 import '../theme/app_colors.dart';

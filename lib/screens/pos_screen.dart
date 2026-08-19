@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/cart_item_model.dart';
+import '../models/order_model.dart';
 import '../providers/restaurant_provider.dart';
 import '../theme/app_colors.dart';
 import '../widgets/cart_bottom_summary.dart';
