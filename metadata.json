@@ -1,0 +1,7 @@
+{
+  "name": "RestoPOS",
+  "description": "Aplikasi kasir dan pemesanan restoran modern dengan sistem manajemen pembayaran offline.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
