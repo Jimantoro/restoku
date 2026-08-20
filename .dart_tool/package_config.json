@@ -33,7 +33,7 @@
     },
     {
       "name": "code_assets",
-      "rootUri": "file:///C:/Users/LENOVO/AppData/Local/Pub/Cache/hosted/pub.dev/code_assets-1.2.1",
+      "rootUri": "file:///C:/Users/LENOVO/AppData/Local/Pub/Cache/hosted/pub.dev/code_assets-2.0.0",
       "packageUri": "lib/",
       "languageVersion": "3.10"
     },
@@ -111,7 +111,7 @@
     },
     {
       "name": "hooks",
-      "rootUri": "file:///C:/Users/LENOVO/AppData/Local/Pub/Cache/hosted/pub.dev/hooks-2.0.2",
+      "rootUri": "file:///C:/Users/LENOVO/AppData/Local/Pub/Cache/hosted/pub.dev/hooks-2.2.0",
       "packageUri": "lib/",
       "languageVersion": "3.10"
     },
@@ -183,7 +183,7 @@
     },
     {
       "name": "meta",
-      "rootUri": "file:///C:/Users/LENOVO/AppData/Local/Pub/Cache/hosted/pub.dev/meta-1.18.3",
+      "rootUri": "file:///C:/Users/LENOVO/AppData/Local/Pub/Cache/hosted/pub.dev/meta-1.19.0",
       "packageUri": "lib/",
       "languageVersion": "3.5"
     },
@@ -195,7 +195,7 @@
     },
     {
       "name": "native_toolchain_c",
-      "rootUri": "file:///C:/Users/LENOVO/AppData/Local/Pub/Cache/hosted/pub.dev/native_toolchain_c-0.19.2",
+      "rootUri": "file:///C:/Users/LENOVO/AppData/Local/Pub/Cache/hosted/pub.dev/native_toolchain_c-0.19.4",
       "packageUri": "lib/",
       "languageVersion": "3.10"
     },
@@ -207,7 +207,7 @@
     },
     {
       "name": "objective_c",
-      "rootUri": "file:///C:/Users/LENOVO/AppData/Local/Pub/Cache/hosted/pub.dev/objective_c-9.5.0",
+      "rootUri": "file:///C:/Users/LENOVO/AppData/Local/Pub/Cache/hosted/pub.dev/objective_c-9.6.0",
       "packageUri": "lib/",
       "languageVersion": "3.10"
     },
@@ -272,6 +272,12 @@
       "languageVersion": "3.0"
     },
     {
+      "name": "process",
+      "rootUri": "file:///C:/Users/LENOVO/AppData/Local/Pub/Cache/hosted/pub.dev/process-5.0.5",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
       "name": "provider",
       "rootUri": "file:///C:/Users/LENOVO/AppData/Local/Pub/Cache/hosted/pub.dev/provider-6.1.5+1",
       "packageUri": "lib/",
@@ -285,7 +291,7 @@
     },
     {
       "name": "record_use",
-      "rootUri": "file:///C:/Users/LENOVO/AppData/Local/Pub/Cache/hosted/pub.dev/record_use-0.6.0",
+      "rootUri": "file:///C:/Users/LENOVO/AppData/Local/Pub/Cache/hosted/pub.dev/record_use-1.1.1",
       "packageUri": "lib/",
       "languageVersion": "3.10"
     },
@@ -351,7 +357,7 @@
     },
     {
       "name": "sqlite3",
-      "rootUri": "file:///C:/Users/LENOVO/AppData/Local/Pub/Cache/hosted/pub.dev/sqlite3-3.5.1",
+      "rootUri": "file:///C:/Users/LENOVO/AppData/Local/Pub/Cache/hosted/pub.dev/sqlite3-3.5.2",
       "packageUri": "lib/",
       "languageVersion": "3.10"
     },
@@ -429,7 +435,7 @@
     },
     {
       "name": "vector_math",
-      "rootUri": "file:///C:/Users/LENOVO/AppData/Local/Pub/Cache/hosted/pub.dev/vector_math-2.4.0",
+      "rootUri": "file:///C:/Users/LENOVO/AppData/Local/Pub/Cache/hosted/pub.dev/vector_math-2.4.2",
       "packageUri": "lib/",
       "languageVersion": "3.10"
     },
