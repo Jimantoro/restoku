@@ -20,18 +20,26 @@ class AppDatabase {
   }
 
   Future<Database> _initDB(String filePath) async {
+    DatabaseFactory dbFactory;
+    String dbPath;
+
     if (!kIsWeb && (Platform.isWindows || Platform.isLinux || Platform.isMacOS)) {
       sqfliteFfiInit();
-      databaseFactory = databaseFactoryFfi;
+      dbFactory = databaseFactoryFfi;
+      dbPath = await dbFactory.getDatabasesPath();
+    } else {
+      dbFactory = databaseFactory;
+      dbPath = await dbFactory.getDatabasesPath();
     }
 
-    final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
 
-    return await openDatabase(
+    return await dbFactory.openDatabase(
       path,
-      version: 1,
-      onCreate: _createDB,
+      options: OpenDatabaseOptions(
+        version: 1,
+        onCreate: _createDB,
+      ),
     );
   }
 
