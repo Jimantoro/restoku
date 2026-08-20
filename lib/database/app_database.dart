@@ -29,7 +29,14 @@ class AppDatabase {
       dbPath = await dbFactory.getDatabasesPath();
     } else {
       dbFactory = databaseFactory;
-      dbPath = await dbFactory.getDatabasesPath();
+      try {
+        dbPath = await dbFactory.getDatabasesPath();
+      } catch (_) {
+        // Fallback otomatis ke SQLite FFI jika native channel gagal
+        sqfliteFfiInit();
+        dbFactory = databaseFactoryFfi;
+        dbPath = await dbFactory.getDatabasesPath();
+      }
     }
 
     final path = join(dbPath, filePath);
